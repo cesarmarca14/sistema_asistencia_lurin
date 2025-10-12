@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sistema de Asistencia</title>
+    <script src="libs/html5-qrcode.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>📘 Sistema de Asistencia del Instituto</h1>
+
+    <div class="modo-selector">
+      <button id="btnQR">Escanear QR</button>
+      <button id="btnManual">Ingresar Código Manual</button>
+    </div>
+
+    <!-- MODO QR -->
+    <div id="modoQR" class="modo">
+      <h2>Escanea el Código QR del Alumno</h2>
+      <div id="reader" style="width: 300px"></div>
+      <p id="resultadoQR"></p>
+    </div>
+
+    <!-- MODO MANUAL -->
+    <div id="modoManual" class="modo" style="display: none">
+      <h2>Registro Manual de Asistencia</h2>
+      <input type="text" id="codigo" placeholder="Código o DNI del alumno" />
+      <button onclick="registrarManual()">Registrar</button>
+      <p id="mensajeManual"></p>
+    </div>
+
+    <script src="asistencia.js"></script>
+  </body>
+</html>
