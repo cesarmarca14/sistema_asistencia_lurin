@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Asistencia</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+  <h1>Sistema de Asistencia - Instituto Lurin</h1>
+
+  <div class="form-container">
+    <input type="text" id="nombre" placeholder="Nombre del alumno">
+    <input type="text" id="codigo" placeholder="Código">
+    <input type="text" id="curso" placeholder="Curso">
+    <input type="text" id="carrera" placeholder="Carrera">
+    <select id="asistencia">
+      <option value="Presente">Presente</option>
+      <option value="Tarde">Tarde</option>
+      <option value="Ausente">Ausente</option>
+    </select>
+    <button id="btnAgregar">Agregar</button>
+    <button id="btnExcel">Descargar Excel</button>
+  </div>
+
+  <table id="tablaAsistencia">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Código</th>
+        <th>Curso</th>
+        <th>Carrera</th>
+        <th>Asistencia</th>
+        <th>Fecha</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+ <button onclick="cerrarSesion()">Cerrar sesión</button>
+  <script src="asistencia.js"></script>
+  <script src="seguridad.js"></script>
+  <script src="cerrarSeccion.js"></script>
+</body>
+</html>

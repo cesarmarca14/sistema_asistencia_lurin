@@ -1,34 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Sistema de Asistencia</title>
-    <script src="libs/html5-qrcode.min.js"></script>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <h1>📘 Sistema de Asistencia del Instituto</h1>
-
-    <div class="modo-selector">
-      <button id="btnQR">Escanear QR</button>
-      <button id="btnManual">Ingresar Código Manual</button>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Instituto</title>
+  <link rel="stylesheet" href="loginstyle.css">
+</head>
+<body>
+  <div class="container">
+    <div class="reseña">
+      <h1>Instituto Publico Tecnologico Lurin</h1>
+      <p>
+        Formando profesionales en Programación y Diseño Web, Prótesis Dental y Contabilidad, con una educación innovadora orientada al crecimiento personal y al desarrollo de un futuro digital
+      </p>
     </div>
 
-    <!-- MODO QR -->
-    <div id="modoQR" class="modo">
-      <h2>Escanea el Código QR del Alumno</h2>
-      <div id="reader" style="width: 300px"></div>
-      <p id="resultadoQR"></p>
+    <div class="login-box">
+      <div class="icono">
+        <i class="fa fa-user-circle"></i>
+      </div>
+      <h2>Iniciar Sesión</h2>
+      <form id="loginForm">
+        <input type="text" id="usuario" placeholder="Correo electrónico" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        <button type="submit">Ingresar</button>
+      </form>
+      <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
     </div>
+  </div>
+ 
 
-    <!-- MODO MANUAL -->
-    <div id="modoManual" class="modo" style="display: none">
-      <h2>Registro Manual de Asistencia</h2>
-      <input type="text" id="codigo" placeholder="Código o DNI del alumno" />
-      <button onclick="registrarManual()">Registrar</button>
-      <p id="mensajeManual"></p>
-    </div>
-
-    <script src="asistencia.js"></script>
-  </body>
+  <script src="https://kit.fontawesome.com/a2e0b6d7d7.js" crossorigin="anonymous"></script>
+  <script src="login.js"></script>
+</body>
 </html>
