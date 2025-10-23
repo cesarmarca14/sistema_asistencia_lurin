@@ -1,52 +1,59 @@
-// --- Modo selector ---
-document.getElementById('btnQR').addEventListener('click', () => {
-  document.getElementById('modoQR').style.display = 'block';
-  document.getElementById('modoManual').style.display = 'none';
-});
-document.getElementById('btnManual').addEventListener('click', () => {
-  document.getElementById('modoQR').style.display = 'none';
-  document.getElementById('modoManual').style.display = 'block';
-});
+const tabla = document.querySelector("#tablaAsistencia tbody");
+const btnAgregar = document.getElementById("btnAgregar");
+const btnExcel = document.getElementById("btnExcel");
+let registros = [];
 
-// --- Escáner QR ---
-function onScanSuccess(decodedText) {
-  document.getElementById('resultadoQR').innerHTML = `Código detectado: ${decodedText}`;
-  registrarAsistencia(decodedText);
-}
+btnAgregar.addEventListener("click", () => {
+  const nombre = document.getElementById("nombre").value.trim();
+  const codigo = document.getElementById("codigo").value.trim();
+  const curso = document.getElementById("curso").value.trim();
+  const carrera = document.getElementById("carrera").value.trim();
+  const asistencia = document.getElementById("asistencia").value;
+  const fecha = new Date().toLocaleDateString();
 
-function registrarAsistencia(codigo) {
-  fetch('registrar.php', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    body: 'codigo=' + encodeURIComponent(codigo)
-  })
-  .then(r => r.text())
-  .then(t => document.getElementById('resultadoQR').innerHTML = t);
-}
-
-// Inicia el escáner
-let scanner = new Html5Qrcode("reader");
-scanner.start(
-  { facingMode: "environment" },
-  { fps: 10, qrbox: 250 },
-  onScanSuccess
-);
-
-// --- Registro Manual ---
-function registrarManual() {
-  let codigo = document.getElementById('codigo').value.trim();
-  if (codigo === "") {
-    document.getElementById('mensajeManual').innerHTML = "⚠️ Ingresa un código.";
+  if (!nombre || !codigo || !carrera) {
+    alert("Por favor completa todos los campos");
     return;
   }
-  fetch('registrar.php', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    body: 'codigo=' + encodeURIComponent(codigo)
-  })
-  .then(r => r.text())
-  .then(t => {
-    document.getElementById('mensajeManual').innerHTML = t;
-    document.getElementById('codigo').value = "";
+
+  const registro = { nombre, codigo,curso, carrera, asistencia, fecha };
+  registros.push(registro);
+  actualizarTabla();
+  limpiarCampos();
+});
+
+function actualizarTabla() {
+  tabla.innerHTML = "";
+  registros.forEach((r, i) => {
+    const fila = `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${r.nombre}</td>
+        <td>${r.codigo}</td>
+        <td>${r.curso}</td>
+        <td>${r.carrera}</td>
+        <td>${r.asistencia}</td>
+        <td>${r.fecha}</td>
+      </tr>`;
+    tabla.innerHTML += fila;
   });
 }
+
+function limpiarCampos() {
+  document.getElementById("nombre").value = "";
+  document.getElementById("codigo").value = "";
+  document.getElementById("curso").value = "";
+  document.getElementById("carrera").value = "";
+  document.getElementById("asistencia").value = "Presente";
+}
+
+btnExcel.addEventListener("click", () => {
+  if (registros.length === 0) {
+    alert("No hay registros para exportar");
+    return;
+  }
+  const hoja = XLSX.utils.json_to_sheet(registros);
+  const libro = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(libro, hoja, "Asistencia");
+  XLSX.writeFile(libro, "asistencia_instituto.xlsx");
+});
