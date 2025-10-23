@@ -17,23 +17,10 @@ h1 {
   justify-content: center;
   flex-wrap: wrap;
 }
-<<<<<<< HEAD
-button:hover {
-  background-color: #175681;
-}
-.modo {
-  margin-top: 20px;
-}
-input {
-  padding: 8px;
-  width: 200px;
-  border-radius: 4px;
-=======
 
 input, select, button {
   padding: 10px;
   border-radius: 5px;
->>>>>>> 27ab2826478c0e4ea326743ce086b2dfb36785b6
   border: 1px solid #ccc;
 }
 
