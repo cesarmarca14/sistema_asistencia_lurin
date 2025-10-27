@@ -15,9 +15,12 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
     alert("✅ Bienvenido, " + usuario + ". Redirigiendo al sistema...");
     // Espera 1 segundo antes de redirigir
     setTimeout(() => {
-      window.location.href = "sistema.html"; // redirige al sistema principal
+      window.location.href = "cursos.html"; // redirige al sistema principal
     }, 1000);
   } else {
     alert("❌ Credenciales incorrectas. Intenta de nuevo.");
   }
 });
+
+localStorage.setItem('profesorLogeado', JSON.stringify({ nombre: 'Juan Pérez' }));
+

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cursos Asignados - Sistema de Asistencia</title>
+  <link rel="stylesheet" href="cursos.css">
+</head>
+<body>
+  <header>
+    <h1>Cursos Asignados</h1>
+    <p id="profesorNombre"></p>
+  </header>
+
+  <main>
+    <section class="cursos-container" id="cursosContainer">
+      <!-- Aquí se cargarán los cursos del profesor -->
+    </section>
+
+    <section class="detalle-curso oculto" id="detalleCurso">
+      <h2 id="nombreCurso"></h2>
+      <p><strong>Total de alumnos:</strong> <span id="totalAlumnos"></span></p>
+
+      <table id="tablaSesiones">
+        <thead>
+          <tr>
+            <th>Semana</th>
+            <th>Fecha</th>
+            <th>Registro de asistencia</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <button id="btnVolver">Volver</button>
+    </section>
+  </main>
+
+  <footer>
+    <button onclick="cerrarSesion()">Cerrar sesión</button>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="seguridad.js"></script>
+  <script src="cerrarSeccion.js"></script>
+  <script src="cursos.js"></script>
+</body>
+</html>
