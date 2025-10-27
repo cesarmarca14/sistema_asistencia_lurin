@@ -1,4 +1,4 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycbwy-fydKEIwXiZQ6LVlCfn5p3kF-AelOKR6B0_FQHTtIVo8eD0QvYxOSEnN-70SPalA/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbwd6u3HYdsVCSjdUXuZSbWtTfXskkef3tA9UBKzDYia9vE2ZhBKZlH1wew1EL0ommRT/exec";
 
 const seleccion = JSON.parse(localStorage.getItem("cursoSeleccionado"));
 const nombreCurso = seleccion ? seleccion.nombreCurso : "Curso sin nombre";
