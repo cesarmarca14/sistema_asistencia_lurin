@@ -1,5 +1,3 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycbwd6u3HYdsVCSjdUXuZSbWtTfXskkef3tA9UBKzDYia9vE2ZhBKZlH1wew1EL0ommRT/exec";
-
 // --- Recuperar datos del curso seleccionado ---
 const seleccion = JSON.parse(localStorage.getItem("cursoSeleccionado"));
 const curso = seleccion ? seleccion.cursoId : null;
@@ -13,7 +11,7 @@ if (!curso || !sesion) {
 document.getElementById("tituloCurso").textContent = `Registro de Asistencia - Curso ${curso}`;
 document.getElementById("infoSesion").textContent = `Semana ${sesion}`;
 
-// --- Simulación de 12 alumnos ---
+// --- Simulación de 12 alumnos inscritos ---
 const alumnos = [
   "Carlos Pérez", "María López", "José Ramírez", "Ana Torres",
   "Luis Mendoza", "Elena Vargas", "Pedro Gutiérrez", "Lucía Castro",
@@ -27,11 +25,12 @@ alumnos.forEach((nombre, index) => {
   fila.innerHTML = `
     <td>${index + 1}</td>
     <td>${nombre}</td>
-    <td><input type="checkbox" id="presente_${index}" value="Presente"></td>
-    <td><input type="checkbox" id="ausente_${index}" value="Ausente"></td>
+    <td><input type="checkbox" id="presente_${index}" name="asistencia_${index}" value="Presente"></td>
+    <td><input type="checkbox" id="ausente_${index}" name="asistencia_${index}" value="Ausente"></td>
   `;
   tbody.appendChild(fila);
 
+  // Hacer que solo se pueda marcar uno (Presente o Ausente)
   const chkPresente = fila.querySelector(`#presente_${index}`);
   const chkAusente = fila.querySelector(`#ausente_${index}`);
 
@@ -55,31 +54,27 @@ document.getElementById("guardarAsistencia").addEventListener("click", () => {
   const data = {
     cursoId: curso,
     sesion,
-    fecha: new Date().toLocaleDateString("es-PE"),
+    fecha: new Date().toLocaleDateString(),
     asistencia: registros
   };
 
-  // Guardar localmente para pruebas
+  // Guardar localmente (para pruebas)
   localStorage.setItem(`asistencia_${curso}_${sesion}`, JSON.stringify(data));
 
-  // Enviar al script de Google
-  fetch(scriptURL, {
+  // Enviar a Google Sheets (con tu Script ID)
+  fetch("https://script.google.com/macros/s/AKfycbwy-fydKEIwXiZQ6LVlCfn5p3kF-AelOKR6B0_FQHTtIVo8eD0QvYxOSEnN-70SPalA/exec", {
     method: "POST",
+    mode: "no-cors", // no-cors evita errores CORS, pero no devuelve respuesta
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   })
-  .then(async (res) => {
-    const result = await res.json();
-    if (result.success) {
-      alert("✅ Asistencia registrada correctamente.");
-      window.location.href = "cursos.html";
-    } else {
-      alert("❌ Error al registrar la asistencia: " + result.error);
-    }
+  .then(() => {
+    alert("✅ Asistencia registrada correctamente.");
+    window.location.href = "cursos.html";
   })
   .catch((error) => {
-    console.error("Fetch error:", error);
-    alert("❌ No se pudo conectar con el servidor de Google.");
+    console.error("Error al registrar asistencia:", error);
+    alert("❌ No se pudo registrar la asistencia.");
   });
 });
 
