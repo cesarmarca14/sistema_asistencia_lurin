@@ -6,7 +6,7 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
 
   // Credenciales válidas (puedes modificarlas)
   const usuarioValido = "cesar";
-  const passwordValido = "12345";
+  const passwordValido = "1";
 
   if (usuario === usuarioValido && password === passwordValido) {
     // Guarda el usuario en localStorage (para mantener sesión si lo deseas)
