@@ -5,16 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ver Asistencia</title>
   <link rel="stylesheet" href="verAsistencia.css">
+
+  <!-- ✅ Librería para generar Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
+
 <body>
   <header class="encabezado">
     <div class="info-curso">
       <h1 id="tituloCurso">Asistencia del Curso</h1>
       <p id="infoSesion"></p>
+      <!-- ✅ Contador de registros -->
+      <p><strong>Total registrados:</strong> <span id="totalRegistros">0</span></p>
     </div>
 
     <div class="acciones-header">
-      <button id="guardarCambios" disabled>💾 Guardar Cambios</button>
       <button id="descargarExcel">⬇️ Descargar Excel</button>
     </div>
   </header>
@@ -30,7 +35,9 @@
             <th>Fecha</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          <tr><td colspan="4">Cargando datos...</td></tr>
+        </tbody>
       </table>
     </section>
 
@@ -43,6 +50,7 @@
     <p>Sistema de Asistencia - Instituto</p>
   </footer>
 
+  <!-- ✅ Archivo principal JS -->
   <script src="verAsistencia.js"></script>
 </body>
 </html>
