@@ -11,7 +11,7 @@ if (!curso || !sesion) {
 document.getElementById("tituloCurso").textContent = `Registro de Asistencia - Curso ${curso}`;
 document.getElementById("infoSesion").textContent = `Semana ${sesion}`;
 
-// --- Simulación de 12 alumnos inscritos ---
+// --- Simulación de 12 alumnos por defecto en todos los cursos ---
 const alumnos = [
   "Carlos Pérez", "María López", "José Ramírez", "Ana Torres",
   "Luis Mendoza", "Elena Vargas", "Pedro Gutiérrez", "Lucía Castro",
@@ -61,16 +61,18 @@ document.getElementById("guardarAsistencia").addEventListener("click", () => {
   // Guardar localmente (para pruebas)
   localStorage.setItem(`asistencia_${curso}_${sesion}`, JSON.stringify(data));
 
-  // Enviar a Google Sheets (cuando pongas tu Script ID)
-  fetch("https://script.google.com/macros/s/AKfycbwy-fydKEIwXiZQ6LVlCfn5p3kF-AelOKR6B0_FQHTtIVo8eD0QvYxOSEnN-70SPalA/exec   ", {
+  // Enviar a Google Sheets (script de Google Apps Script)
+  fetch("https://script.google.com/macros/s/AKfycbwy-fydKEIwXiZQ6LVlCfn5p3kF-AelOKR6B0_FQHTtIVo8eD0QvYxOSEnN-70SPalA/exec", {
     method: "POST",
-    mode: "no-cors",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
+  }).then(() => {
+    alert("✅ Asistencia registrada correctamente.");
+    window.location.href = "cursos.html";
+  }).catch((error) => {
+    console.error(error);
+    alert("❌ Error al registrar la asistencia.");
   });
-
-  alert("✅ Asistencia registrada correctamente.");
-  window.location.href = "cursos.html";
 });
 
 // --- Volver sin guardar ---

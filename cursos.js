@@ -1,14 +1,14 @@
-// --- Datos simulados (luego puedes reemplazar por conexión real) ---
+// --- Datos del profesor ---
 const profesor = JSON.parse(localStorage.getItem('profesorLogeado')) || { nombre: "Profesor Invitado" };
+document.getElementById("profesorNombre").textContent = `Profesor: ${profesor.nombre}`;
 
-// Ejemplo de cursos asignados
+// --- Ejemplo de cursos asignados ---
 const cursos = [
-  { id: 1, nombre: "Desarrollo Web I", alumnos: 25 },
-  { id: 2, nombre: "Base de Datos", alumnos: 22 },
-  { id: 3, nombre: "Programación JavaScript", alumnos: 28 }
+  { id: 1, nombre: "Desarrollo Web I", alumnos: 12 },
+  { id: 2, nombre: "Base de Datos", alumnos: 12 },
+  { id: 3, nombre: "Programación JavaScript", alumnos: 12 }
 ];
 
-document.getElementById("profesorNombre").textContent = `Profesor: ${profesor.nombre}`;
 const cursosContainer = document.getElementById("cursosContainer");
 const detalleCurso = document.getElementById("detalleCurso");
 const tablaSesiones = document.getElementById("tablaSesiones").querySelector("tbody");
@@ -19,7 +19,7 @@ cursos.forEach(curso => {
   div.classList.add("curso-card");
   div.innerHTML = `
     <h3>${curso.nombre}</h3>
-    <p><strong>Alumnos:</strong> ${curso.alumnos}</p>
+    <p><strong>Alumnos registrados:</strong> ${curso.alumnos}</p>
     <button onclick="verCurso(${curso.id})">Ver semanas</button>
   `;
   cursosContainer.appendChild(div);
@@ -38,18 +38,17 @@ function verCurso(id) {
 
   tablaSesiones.innerHTML = "";
 
-  // Crear las 16 sesiones con fechas automáticas (una por semana)
+  // Crear las 16 semanas con fechas automáticas
   const hoy = new Date();
   for (let i = 1; i <= 16; i++) {
     const fecha = new Date(hoy);
-    fecha.setDate(hoy.getDate() + (i - 1) * 7); // cada semana
+    fecha.setDate(hoy.getDate() + (i - 1) * 7);
     const fechaTexto = fecha.toLocaleDateString('es-PE', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit'
     });
 
-    // Verificamos si la asistencia ya fue registrada
     const key = `asistencia_${id}_${i}`;
     const asistenciaRegistrada = localStorage.getItem(key);
 
@@ -67,27 +66,38 @@ function verCurso(id) {
   }
 }
 
-// --- Botón para volver a la lista ---
+// --- Volver a la lista de cursos ---
 document.getElementById("btnVolver").addEventListener("click", () => {
   detalleCurso.classList.add("oculto");
   cursosContainer.classList.remove("oculto");
 });
 
-// --- Función para ir al registro de asistencia ---
+// --- Ir al registro o vista de asistencia ---
 function registrarAsistencia(cursoId, sesion) {
   const key = `asistencia_${cursoId}_${sesion}`;
   const asistenciaRegistrada = localStorage.getItem(key);
 
+  const curso = cursos.find(c => c.id === cursoId);
+
   localStorage.setItem(
     "cursoSeleccionado",
-    JSON.stringify({ cursoId, sesion })
+    JSON.stringify({
+      cursoId,
+      sesion,
+      nombreCurso: curso ? curso.nombre : "Curso sin nombre"
+    })
   );
 
   if (asistenciaRegistrada) {
-    // Si ya fue registrada, ir a ver asistencia
     window.location.href = "verAsistencia.html";
   } else {
-    // Si no, ir a registrar asistencia
     window.location.href = "registroAsistencia.html";
   }
 }
+
+// --- Cerrar sesión ---
+document.getElementById("btnCerrarSesion").addEventListener("click", () => {
+  localStorage.removeItem('profesorLogeado');
+  localStorage.removeItem('cursoSeleccionado');
+  window.location.href = "login.html";
+});

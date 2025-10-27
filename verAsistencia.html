@@ -7,9 +7,16 @@
   <link rel="stylesheet" href="verAsistencia.css">
 </head>
 <body>
-  <header>
-    <h1 id="tituloCurso">Asistencia del Curso</h1>
-    <p id="infoSesion"></p>
+  <header class="encabezado">
+    <div class="info-curso">
+      <h1 id="tituloCurso">Asistencia del Curso</h1>
+      <p id="infoSesion"></p>
+    </div>
+
+    <div class="acciones-header">
+      <button id="guardarCambios" disabled>💾 Guardar Cambios</button>
+      <button id="descargarExcel">⬇️ Descargar Excel</button>
+    </div>
   </header>
 
   <main>
@@ -21,14 +28,15 @@
             <th>Alumno</th>
             <th>Estado</th>
             <th>Fecha</th>
-            <th>Acción</th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
     </section>
 
-    <button id="volver">Volver</button>
+    <div class="acciones">
+      <button id="volver">Volver</button>
+    </div>
   </main>
 
   <footer>

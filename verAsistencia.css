@@ -1,72 +1,164 @@
+/* === Estilos generales === */
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f6f8;
+  font-family: 'Poppins', Arial, sans-serif;
+  background-color: #f2f5fa;
   margin: 0;
   padding: 0;
+  color: #333;
 }
 
-header {
-  background-color: #1a73e8;
-  color: white;
-  padding: 15px;
-  text-align: center;
-}
-
-.filtro {
+/* === Encabezado === */
+header.encabezado {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  background: linear-gradient(90deg, #004aad, #0066cc);
+  color: white;
+  padding: 15px 25px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.info-curso h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.info-curso p {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* === Botones en encabezado === */
+.acciones-header {
+  display: flex;
   gap: 10px;
-  margin: 20px;
+  align-items: center;
 }
 
-input {
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-button {
-  background-color: #1a73e8;
+.acciones-header button,
+#descargarExcel {
+  background-color: #28a745; /* verde */
   color: white;
   border: none;
-  border-radius: 5px;
-  padding: 8px 16px;
+  padding: 10px 20px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+  min-width: 140px;
 }
 
-button:hover {
-  background-color: #155ab6;
+.acciones-header button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.tabla-container {
-  margin: 20px;
-  display: flex;
-  justify-content: center;
+.acciones-header button:hover:not(:disabled),
+#descargarExcel:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
 }
 
+.acciones-header button:active,
+#descargarExcel:active {
+  transform: translateY(0);
+}
+
+/* === Contenedor de la tabla === */
+#contenedorTabla {
+  padding: 25px;
+  overflow-x: auto;
+}
+
+/* === Tabla === */
 table {
-  width: 80%;
+  width: 100%;
   border-collapse: collapse;
-  background: white;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  transition: 0.3s ease;
 }
 
 th, td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: center;
+  border: 1px solid #e2e6ea;
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 0.95rem;
 }
 
 th {
-  background-color: #f0f2f5;
+  background-color: #007bff;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-footer {
+tbody tr:nth-child(even) {
+  background-color: #f8f9fc;
+}
+
+tbody tr:hover {
+  background-color: #eaf3ff;
+  transition: 0.2s;
+}
+
+/* Estado Ausente en rojo */
+.estado.ausente {
+  color: red;
+  font-weight: bold;
+}
+
+/* === Botón Volver === */
+.acciones {
   text-align: center;
-  margin-top: 30px;
-  padding: 10px;
-  color: #666;
-  font-size: 14px;
+  margin: 30px 0;
+}
+
+#volver {
+  background-color: #035bb4;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+#volver:hover {
+  background-color: #5a6268;
+  transform: translateY(-2px);
+}
+
+/* === Responsivo === */
+@media (max-width: 768px) {
+  header.encabezado {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .acciones-header {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .acciones-header button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  table {
+    font-size: 0.85rem;
+  }
 }
