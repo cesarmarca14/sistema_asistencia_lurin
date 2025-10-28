@@ -26,17 +26,19 @@ alumnos.forEach((nombre, index) => {
     <td>${index + 1}</td>
     <td>${nombre}</td>
     <td><input type="checkbox" id="presente_${index}" name="asistencia_${index}" value="Presente"></td>
-    <td><input type="checkbox" id="ausente_${index}" name="asistencia_${index}" value="Ausente"></td>
+    <td><input type="checkbox" id="ausente_${index}" name="asistencia_${index}" value="Ausente" checked></td>
   `;
   tbody.appendChild(fila);
 
-  // Hacer que solo se pueda marcar uno (Presente o Ausente)
+  // --- Controlar que solo se marque una opción ---
   const chkPresente = fila.querySelector(`#presente_${index}`);
   const chkAusente = fila.querySelector(`#ausente_${index}`);
 
   chkPresente.addEventListener("change", () => {
     if (chkPresente.checked) chkAusente.checked = false;
+    else chkAusente.checked = true; // Si desmarca presente, vuelve a ausente
   });
+
   chkAusente.addEventListener("change", () => {
     if (chkAusente.checked) chkPresente.checked = false;
   });
@@ -45,26 +47,25 @@ alumnos.forEach((nombre, index) => {
 // --- Guardar asistencia ---
 document.getElementById("guardarAsistencia").addEventListener("click", () => {
   const registros = alumnos.map((nombre, i) => {
-    let estado = "No marcado";
+    let estado = "Ausente"; // Por defecto ausente
     if (document.getElementById(`presente_${i}`).checked) estado = "Presente";
-    if (document.getElementById(`ausente_${i}`).checked) estado = "Ausente";
     return { alumno: nombre, estado };
   });
 
   const data = {
     cursoId: curso,
     sesion,
-    fecha: new Date().toLocaleDateString(),
+    fecha: new Date().toLocaleDateString("es-PE"),
     asistencia: registros
   };
 
-  // Guardar localmente (para pruebas)
+  // --- Guardar localmente (para pruebas) ---
   localStorage.setItem(`asistencia_${curso}_${sesion}`, JSON.stringify(data));
 
-  // Enviar a Google Sheets (con tu Script ID)
+  // --- Enviar a Google Sheets ---
   fetch("https://script.google.com/macros/s/AKfycbwy-fydKEIwXiZQ6LVlCfn5p3kF-AelOKR6B0_FQHTtIVo8eD0QvYxOSEnN-70SPalA/exec", {
     method: "POST",
-    mode: "no-cors", // no-cors evita errores CORS, pero no devuelve respuesta
+    mode: "no-cors",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   })
