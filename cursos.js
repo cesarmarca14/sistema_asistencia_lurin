@@ -79,15 +79,17 @@ function registrarAsistencia(cursoId, sesion) {
 
   const curso = cursos.find(c => c.id === cursoId);
 
+  // ✅ Se guarda correctamente el nombre del curso
   localStorage.setItem(
     "cursoSeleccionado",
     JSON.stringify({
       cursoId,
       sesion,
-      nombreCurso: curso ? curso.nombre : "Curso sin nombre"
+      cursoNombre: curso ? curso.nombre : "Curso sin nombre"
     })
   );
 
+  // Redirige según si ya hay registro o no
   if (asistenciaRegistrada) {
     window.location.href = "verAsistencia.html";
   } else {

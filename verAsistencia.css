@@ -5,12 +5,13 @@ body {
   margin: 0;
   padding: 0;
   color: #333;
+  text-align: center;
 }
 
 /* === Encabezado === */
 header.encabezado {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   background: linear-gradient(90deg, #004aad, #0066cc);
   color: white;
@@ -24,20 +25,23 @@ header.encabezado {
   font-weight: 600;
 }
 
-.info-curso p {
-  margin: 4px 0 0;
-  font-size: 0.95rem;
-  opacity: 0.9;
-}
-
-/* === Botones en encabezado === */
-.acciones-header {
+/* === Contenedor superior: Semana + Sede + Botón Excel === */
+.info-superior {
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
   align-items: center;
+  margin: 15px 25px 20px;
+  flex-wrap: wrap;
 }
 
-.acciones-header button,
+.info-superior p {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  color: #333;
+}
+
+/* === Botón Descargar Excel === */
 #descargarExcel {
   background-color: #28a745;
   color: white;
@@ -49,24 +53,17 @@ header.encabezado {
   font-size: 0.95rem;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   transition: all 0.3s ease;
-  min-width: 140px;
 }
 
-.acciones-header button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.acciones-header button:hover:not(:disabled),
 #descargarExcel:hover {
   background-color: #218838;
   transform: translateY(-2px);
 }
 
-.acciones-header button:active,
 #descargarExcel:active {
   transform: translateY(0);
 }
@@ -85,13 +82,13 @@ table {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-  transition: 0.3s ease;
+  text-align: center;
 }
 
 th, td {
   border: 1px solid #e2e6ea;
   padding: 12px 14px;
-  text-align: left;
+  text-align: center;
   font-size: 0.95rem;
 }
 
@@ -106,19 +103,22 @@ tbody tr:nth-child(even) {
   background-color: #f8f9fc;
 }
 
-/* 🚫 Eliminado el sombreado o efecto hover */
 tbody tr:hover {
-  background-color: inherit;
-  transition: none;
+  background-color: #eaf3ff;
+  transition: 0.2s;
 }
 
-/* === Estado Ausente (solo fondo rojo en la celda del estado) === */
+/* === Estado Ausente === */
 .estado-ausente {
-  background-color: #ffb3b3 !important; /* rojo suave */
-  color: inherit !important;
+  background-color: #ffb3b3 !important;
+  color: #333 !important;
   font-weight: bold;
   border-radius: 4px;
   transition: background-color 0.3s ease;
+}
+
+.estado-ausente:hover {
+  background-color: #ff8080 !important;
 }
 
 /* === Botón Volver === */
@@ -145,20 +145,15 @@ tbody tr:hover {
 
 /* === Responsivo === */
 @media (max-width: 768px) {
-  header.encabezado {
+  .info-superior {
     flex-direction: column;
-    gap: 10px;
+    align-items: center;
     text-align: center;
+    gap: 10px;
   }
 
-  .acciones-header {
-    flex-direction: column;
+  #descargarExcel {
     width: 100%;
-  }
-
-  .acciones-header button {
-    width: 100%;
-    justify-content: center;
   }
 
   table {

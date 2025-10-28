@@ -1,107 +1,135 @@
-// --- URL del Google Apps Script ---
-const scriptURL = "https://script.google.com/macros/s/AKfycbwy-fydKEIwXiZQ6LVlCfn5p3kF-AelOKR6B0_FQHTtIVo8eD0QvYxOSEnN-70SPalA/exec";
+document.addEventListener("DOMContentLoaded", () => {
 
-// --- Recuperar datos del curso seleccionado ---
-const seleccion = JSON.parse(localStorage.getItem("cursoSeleccionado"));
-const curso = seleccion ? seleccion.cursoId : null;
-const sesion = seleccion ? seleccion.sesion : null;
+  // --- Recuperar datos del curso seleccionado ---
+  const seleccion = JSON.parse(localStorage.getItem("cursoSeleccionado"));
+  const curso = seleccion ? seleccion.cursoId : null;
+  const sesion = seleccion ? seleccion.sesion : null;
+  const cursoNombre = seleccion ? seleccion.cursoNombre : "Curso sin nombre";
+  const sede = localStorage.getItem("sedeSeleccionada") || "No especificada";
 
-document.getElementById("tituloCurso").textContent = `Asistencia del Curso ${curso || ''}`;
-document.getElementById("infoSesion").textContent = sesion ? `Sesión ${sesion}` : "";
-
-// --- Variable global ---
-let datosAsistencia = [];
-
-// --- Cargar asistencias ---
-async function cargarAsistencia() {
-  try {
-    const url = `${scriptURL}?cursoId=${curso || ""}&sesion=${sesion || ""}`;
-    const res = await fetch(url);
-    const data = await res.json();
-
-    // --- Filtrar registros válidos (por si hay vacíos) ---
-    const registrosValidos = data.filter(fila => fila.alumno && fila.estado);
-
-    datosAsistencia = registrosValidos; // Guardar para exportar
-
-    const tbody = document.querySelector("#tablaAsistencia tbody");
-    tbody.innerHTML = ""; // limpiar
-
-    if (registrosValidos.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4">No hay registros de asistencia.</td></tr>`;
-      document.getElementById("totalRegistros").textContent = "0";
-      return;
-    }
-
-    registrosValidos.forEach((fila, index) => {
-      const tr = document.createElement("tr");
-
-      // --- Número ---
-      const tdNro = document.createElement("td");
-      tdNro.textContent = index + 1;
-
-      // --- Alumno ---
-      const tdAlumno = document.createElement("td");
-      tdAlumno.textContent = fila.alumno;
-
-      // --- Estado ---
-      const tdEstado = document.createElement("td");
-      tdEstado.textContent = fila.estado;
-
-      // Fondo rojo si es Ausente
-      if (fila.estado.toLowerCase() === "ausente") {
-        tdEstado.style.backgroundColor = "#fb7b7b";
-        tdEstado.style.color = "#333"; // mantiene color de texto igual
-        tdEstado.style.fontWeight = "bold";
-      }
-
-      // --- Fecha ---
-      const tdFecha = document.createElement("td");
-      tdFecha.textContent = fila.fecha
-        ? new Date(fila.fecha).toLocaleDateString("es-PE")
-        : "";
-
-      // --- Agregar ---
-      tr.appendChild(tdNro);
-      tr.appendChild(tdAlumno);
-      tr.appendChild(tdEstado);
-      tr.appendChild(tdFecha);
-      tbody.appendChild(tr);
-    });
-
-    // Mostrar total
-    document.getElementById("totalRegistros").textContent = registrosValidos.length;
-  } catch (error) {
-    console.error(error);
-    alert("❌ Ocurrió un error al obtener los datos de asistencia.");
-  }
-}
-
-// --- Descargar Excel ---
-function descargarExcel() {
-  if (datosAsistencia.length === 0) {
-    alert("No hay datos para descargar.");
+  if (!curso || !sesion) {
+    alert("No se encontró información del curso seleccionado.");
+    window.location.href = "cursos.html";
     return;
   }
 
-  const datos = datosAsistencia.map((fila, index) => ({
-    Nro: index + 1,
-    Alumno: fila.alumno,
-    Estado: fila.estado,
-    Fecha: fila.fecha ? new Date(fila.fecha).toLocaleDateString("es-PE") : ""
-  }));
+  // --- Mostrar título y detalles ---
+  document.getElementById("tituloCurso").textContent = `Asistencia - ${cursoNombre}`;
+  document.getElementById("infoSesion").textContent = `Semana ${sesion} – Sede: ${sede}`;
 
-  const ws = XLSX.utils.json_to_sheet(datos);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Asistencia");
-  XLSX.writeFile(wb, `Asistencia_${curso || "curso"}_Sesion_${sesion || ""}.xlsx`);
-}
+  // --- Recuperar registros guardados ---
+  const data = JSON.parse(localStorage.getItem(`asistencia_${curso}_${sesion}`));
+  const tbody = document.querySelector("#tablaAsistencia tbody");
 
-// --- Botones ---
-document.getElementById("volver").addEventListener("click", () => {
-  window.location.href = "cursos.html";
+  if (data && data.asistencia && data.asistencia.length > 0) {
+    tbody.innerHTML = "";
+
+    data.asistencia.forEach((item, index) => {
+      const fila = document.createElement("tr");
+
+      // --- Solo marcar rojo si está ausente ---
+      let estiloEstado = "";
+      if (item.estado.toLowerCase() === "ausente") {
+        estiloEstado = "background-color: #ff4d4d; color: white; font-weight: bold;";
+      }
+
+      fila.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${item.alumno}</td>
+        <td style="${estiloEstado} text-align:center;">${item.estado}</td>
+        <td>${data.fecha}</td>
+      `;
+      tbody.appendChild(fila);
+    });
+
+    document.getElementById("totalRegistros").textContent =
+      `Total de registros: ${data.asistencia.length}`;
+  } else {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">No hay registros de asistencia.</td></tr>`;
+    document.getElementById("totalRegistros").textContent = "Total de registros: 0";
+  }
+
+  // --- Botón volver ---
+  document.getElementById("volver").addEventListener("click", () => {
+    window.location.href = "cursos.html";
+  });
+
+  // --- Botón descargar Excel con estilo ---
+  document.getElementById("descargarExcel").addEventListener("click", () => {
+    const tabla = document.getElementById("tablaAsistencia");
+    const filas = tabla.querySelectorAll("tbody tr");
+
+    if (!tabla || filas.length === 0) {
+      alert("No hay registros para descargar.");
+      return;
+    }
+
+    try {
+      // Construir hoja con encabezado y tabla
+      const datos = [
+        ["Instituto Público Tecnológico de Lurín"],
+        [`Curso: ${cursoNombre}`],
+        [`Semana: ${sesion}`],
+        [`Sede: ${sede}`],
+        [""],
+        ["N°", "Alumno", "Estado", "Fecha"]
+      ];
+
+      data.asistencia.forEach((item, i) => {
+        datos.push([
+          i + 1,
+          item.alumno,
+          item.estado,
+          data.fecha
+        ]);
+      });
+
+      const ws = XLSX.utils.aoa_to_sheet(datos);
+
+      // --- Ajustar tamaño de columnas ---
+      ws["!cols"] = [
+        { wch: 5 },   // N°
+        { wch: 30 },  // Alumno
+        { wch: 15 },  // Estado
+        { wch: 15 }   // Fecha
+      ];
+
+      // --- Aplicar estilos (encabezado con color, bordes, etc.) ---
+      const range = XLSX.utils.decode_range(ws["!ref"]);
+      for (let R = range.s.r; R <= range.e.r; ++R) {
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+          const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
+          if (!ws[cellRef]) continue;
+          ws[cellRef].s = {
+            font: { name: "Arial", sz: 11 },
+            alignment: { vertical: "center", horizontal: "center" },
+            border: {
+              top: { style: "thin", color: { rgb: "CCCCCC" } },
+              bottom: { style: "thin", color: { rgb: "CCCCCC" } },
+              left: { style: "thin", color: { rgb: "CCCCCC" } },
+              right: { style: "thin", color: { rgb: "CCCCCC" } }
+            }
+          };
+
+          // Colores de encabezado
+          if (R === 5) {
+            ws[cellRef].s.fill = { fgColor: { rgb: "0070C0" } };
+            ws[cellRef].s.font = { color: { rgb: "FFFFFF" }, bold: true };
+          }
+        }
+      }
+
+      // Crear libro y descargar
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Asistencia");
+
+      const nombreArchivo = `Asistencia_${cursoNombre.replace(/\s+/g, "_")}_Semana${sesion}_Sede_${sede.replace(/\s+/g, "_")}.xlsx`;
+      XLSX.writeFile(wb, nombreArchivo);
+
+    } catch (error) {
+      console.error("Error al generar el archivo Excel:", error);
+      alert("Ocurrió un error al intentar descargar el archivo Excel.");
+    }
+  });
+
 });
-document.getElementById("descargarExcel").addEventListener("click", descargarExcel);
-
-// --- Cargar al iniciar ---
-cargarAsistencia();

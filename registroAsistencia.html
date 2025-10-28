@@ -1,14 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registro de Asistencia</title>
-  <link rel="stylesheet" href="registroAsistencia.css">
+  <link rel="stylesheet" href="registroAsistencia.css" />
 </head>
 <body>
   <h1 id="tituloCurso">Registro de Asistencia</h1>
-  <p id="infoSesion"></p>
+
+  <div class="info-header">
+    <p id="infoSesion"></p>
+
+    <div class="sede-selector">
+      <label for="sede">Sede:</label>
+      <select id="sede">
+        <option value="">Seleccione una sede</option>
+        <optgroup label="PRINCIPAL">
+          <option value="PRINCIPAL - A101">PRINCIPAL - A101</option>
+          <option value="PRINCIPAL - L101">PRINCIPAL - L101</option>
+          <option value="PRINCIPAL - L102">PRINCIPAL - L102</option>
+          <option value="PRINCIPAL - L103">PRINCIPAL - L103</option>
+        </optgroup>
+        <optgroup label="UPIS">
+          <option value="UPIS - 101">UPIS - 101</option>
+          <option value="UPIS - 102">UPIS - 102</option>
+          <option value="UPIS - 103">UPIS - 103</option>
+          <option value="UPIS - 104">UPIS - 104</option>
+        </optgroup>
+        <option value="VIRTUAL">VIRTUAL</option>
+      </select>
+    </div>
+  </div>
 
   <table id="tablaAlumnos">
     <thead>
@@ -27,7 +50,6 @@
     <button id="volver">Volver</button>
   </div>
 
-  <!-- Scripts -->
   <script src="registroAsistencia.js"></script>
 </body>
 </html>

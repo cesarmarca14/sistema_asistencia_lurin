@@ -5,52 +5,149 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ver Asistencia</title>
   <link rel="stylesheet" href="verAsistencia.css">
-
-  <!-- ✅ Librería para generar Excel -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- Librerías para ExcelJS -->
+  <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver/dist/FileSaver.min.js"></script>
 </head>
-
 <body>
+
+  <!-- === Encabezado === -->
   <header class="encabezado">
     <div class="info-curso">
-      <h1 id="tituloCurso">Asistencia del Curso</h1>
-      <p id="infoSesion"></p>
-      <!-- ✅ Contador de registros -->
-      <p><strong>Total registrados:</strong> <span id="totalRegistros">0</span></p>
-    </div>
-
-    <div class="acciones-header">
-      <button id="descargarExcel">⬇️ Descargar Excel</button>
+      <h1 id="tituloCurso">Asistencia - Curso</h1>
     </div>
   </header>
 
-  <main>
-    <section id="contenedorTabla">
-      <table id="tablaAsistencia">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Alumno</th>
-            <th>Estado</th>
-            <th>Fecha</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td colspan="4">Cargando datos...</td></tr>
-        </tbody>
-      </table>
-    </section>
+  <!-- === Información superior: Semana + Sede + Botón Excel === -->
+  <div class="info-superior">
+    <p id="infoSesion"></p>
+    <button id="descargarExcel">📥 Descargar Excel</button>
+  </div>
 
-    <div class="acciones">
-      <button id="volver">Volver</button>
-    </div>
-  </main>
+  <!-- === Tabla de asistencia === -->
+  <div id="contenedorTabla">
+    <table id="tablaAsistencia">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Alumno</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
-  <footer>
-    <p>Sistema de Asistencia - Instituto</p>
-  </footer>
+  <!-- === Total de registros === -->
+  <p id="totalRegistros" style="text-align:center; margin-top:10px; color:#333; font-weight:bold;"></p>
 
-  <!-- ✅ Archivo principal JS -->
-  <script src="verAsistencia.js"></script>
+  <!-- === Botón Volver === -->
+  <div class="acciones">
+    <button id="volver">⬅ Volver</button>
+  </div>
+
+  <!-- === Script principal === -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const seleccion = JSON.parse(localStorage.getItem("cursoSeleccionado"));
+      const curso = seleccion ? seleccion.cursoId : null;
+      const sesion = seleccion ? seleccion.sesion : null;
+      const cursoNombre = seleccion ? seleccion.cursoNombre : "Curso sin nombre";
+      const sede = localStorage.getItem("sedeSeleccionada") || "No especificada";
+
+      if (!curso || !sesion) {
+        alert("No se encontró información del curso seleccionado.");
+        window.location.href = "cursos.html";
+        return;
+      }
+
+      document.getElementById("tituloCurso").textContent = `Asistencia - ${cursoNombre}`;
+      document.getElementById("infoSesion").textContent = `Semana ${sesion} – Sede: ${sede}`;
+
+      const data = JSON.parse(localStorage.getItem(`asistencia_${curso}_${sesion}`));
+      const tbody = document.querySelector("#tablaAsistencia tbody");
+
+      if (data && data.asistencia && data.asistencia.length > 0) {
+        tbody.innerHTML = "";
+        data.asistencia.forEach((item, index) => {
+          const fila = document.createElement("tr");
+          let estiloEstado = "";
+          if (item.estado.toLowerCase() === "ausente") {
+            estiloEstado = "background-color: #ff4d4d; color: white; font-weight: bold;";
+          }
+          fila.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${item.alumno}</td>
+            <td style="${estiloEstado} text-align:center;">${item.estado}</td>
+            <td>${data.fecha}</td>
+          `;
+          tbody.appendChild(fila);
+        });
+        document.getElementById("totalRegistros").textContent =
+          `Total de registros: ${data.asistencia.length}`;
+      } else {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">No hay registros de asistencia.</td></tr>`;
+        document.getElementById("totalRegistros").textContent = "Total de registros: 0";
+      }
+
+      document.getElementById("volver").addEventListener("click", () => {
+        window.location.href = "cursos.html";
+      });
+
+      // === Descargar Excel con estilo ===
+      document.getElementById("descargarExcel").addEventListener("click", async () => {
+        if (!data || !data.asistencia || data.asistencia.length === 0) {
+          alert("No hay registros para descargar.");
+          return;
+        }
+
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet("Asistencia");
+
+        // Encabezados y curso
+        sheet.addRow(["Instituto Público Tecnológico de Lurín"]);
+        sheet.addRow([`Curso: ${cursoNombre}`]);
+        sheet.addRow([`Semana: ${sesion}`]);
+        sheet.addRow([`Sede: ${sede}`]);
+        sheet.addRow([]);
+        const header = ["N°", "Alumno", "Estado", "Fecha"];
+        const headerRow = sheet.addRow(header);
+
+        // Estilos encabezado
+        headerRow.eachCell(cell => {
+          cell.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'0070C0'} };
+          cell.font = { color: {argb:'FFFFFF'}, bold: true };
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          cell.border = {
+            top: {style:'thin'}, left:{style:'thin'}, bottom:{style:'thin'}, right:{style:'thin'}
+          };
+        });
+
+        // Filas de asistencia
+        data.asistencia.forEach((item, i) => {
+          const row = sheet.addRow([i+1, item.alumno, item.estado, data.fecha]);
+          if(item.estado.toLowerCase() === 'ausente'){
+            row.getCell(3).fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FF4D4D'} };
+            row.getCell(3).font = { color: {argb:'FFFFFF'}, bold:true };
+            row.getCell(3).alignment = { horizontal:'center' };
+          }
+          row.eachCell(cell => {
+            cell.border = {
+              top: {style:'thin'}, left:{style:'thin'}, bottom:{style:'thin'}, right:{style:'thin'}
+            };
+            cell.alignment = { horizontal:'center', vertical:'middle' };
+          });
+        });
+
+        sheet.columns.forEach(col => col.width = 20); // ancho uniforme
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+        saveAs(blob, `Asistencia_${cursoNombre.replace(/\s+/g,'_')}_Semana${sesion}_Sede_${sede.replace(/\s+/g,'_')}.xlsx`);
+      });
+    });
+  </script>
+
 </body>
 </html>
